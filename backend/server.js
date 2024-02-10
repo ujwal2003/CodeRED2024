@@ -6,7 +6,8 @@ const port = 8080;
 
 app.get('/', (req, res) => {
     res.send("Server is online.");
-    console.log(test.extractKeywords("I want the flights from Houston to New York and also visit Washington DC"));
+    console.log(test.extractKeywords("Find me the lowest price flight option between Atlanta and New York between the dates of November 11th and 19th"));
+    // console.log(test.extractKeywords("Find me the cheapest flight from Houston to Seattle"));
 });
 
 app.listen(port, () => {

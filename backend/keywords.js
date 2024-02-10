@@ -1,25 +1,37 @@
 const nlp = require('compromise');
+const stringSimilarity = require('string-similarity');
+
+function closestSubset(target, options) {
+    let closestOption = null;
+    let highestSimilarity = -1;
+    
+    options.forEach(option => {
+        const similarity = stringSimilarity.compareTwoStrings(target, option);
+        if (similarity > highestSimilarity) {
+            closestOption = option;
+            highestSimilarity = similarity;
+        }
+    });
+
+    return closestOption;
+}
 
 function extractKeywords(userString) {
-    const doc = nlp(userString);
-    // const prepositions = doc.prepositions().out('array');
+    const doc = nlp(userString.toLowerCase());
     
-    // const startLocation = doc.match('from #Place').out('normal');
-    // const destinationLocation = doc.match('to #Place').out('normal');
+    let locations = doc.places().out('array');
 
-    const locations = doc.places().out('array');
+    const startContext = doc.match('(from|between) #Place').out('normal');
+    const destinationContext = doc.match('(to|and) #Place').out('normal');
 
-    
-    const fromMatch = userString.match(/from\s+([^\s]+)/i);
-    const toMatch = userString.match(/to\s+([^\s]+)/i);
-    
-    const startLocation = fromMatch ? fromMatch[1] : null;
-    const destinationLocation = toMatch ? toMatch[1] : null;
-    
-    const isLocation = nlp('test Houston ').places().text();
-    // console.log(doc.match(destinationLocation).text());
+    locations = locations.map((place) => {
+        return place.toLowerCase();
+    });
 
-    return {startLocation, destinationLocation, locations, isLocation};
+    const startingLocation = closestSubset(startContext, locations);
+    const endingLocation = closestSubset(destinationContext, locations);
+
+    return {startingLocation, endingLocation, locations};
 }
 
 module.exports = {
