@@ -1,4 +1,6 @@
 const nlp = require('compromise');
+nlp.extend(require('compromise-dates'));
+
 const stringSimilarity = require('string-similarity');
 
 function closestSubset(target, options) {
@@ -16,7 +18,7 @@ function closestSubset(target, options) {
     return closestOption;
 }
 
-function extractKeywords(userString) {
+function extractPlaces(userString) {
     const doc = nlp(userString.toLowerCase());
     
     let locations = doc.places().out('array');
@@ -32,6 +34,21 @@ function extractKeywords(userString) {
     const endingLocation = closestSubset(destinationContext, locations);
 
     return {startingLocation, endingLocation, locations};
+}
+
+function extractDates(userString) {
+    const doc = nlp(userString.toLowerCase());
+
+    let dates = doc.dates().get();
+    let formattedDates = doc.dates().format('{month} {date-ordinal}').out('array');
+    return dates;
+}
+
+function extractKeywords(userString) {
+    const places = extractPlaces(userString);
+    const dates = extractDates(userString);
+
+    return {places, dates};
 }
 
 module.exports = {
