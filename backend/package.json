@@ -1,7 +1,10 @@
 {
   "dependencies": {
+    "compromise": "^14.11.2",
+    "compromise-dates": "^3.4.2",
     "express": "^4.18.2",
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.0.3",
+    "string-similarity": "^4.0.4"
   },
   "scripts": {
     "start": "node server.js",
