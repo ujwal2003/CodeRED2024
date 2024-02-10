@@ -22,18 +22,26 @@ function closestSubsetStr(target, options) {
 
 router.post('/get', (req, res) => {
     let { userPrompt } = req.body;
+    let nlpSucceeded = true;
     const doc = nlp(userPrompt.toLowerCase());
 
     const startLocationContext = doc.match('(from|between) #Place').out('normal');
     const destinationContext = doc.match('(to|and) #Place').out('normal');
     const locations = doc.places().out('array');
 
+    if(locations.length < 2)
+        nlpSucceeded = false;
+
     const startingLocation = closestSubsetStr(startLocationContext, locations);
     const destination = closestSubsetStr(destinationContext, locations);
 
     const dates = doc.dates().get();
 
+    if(Object.keys(dates).length < 1)
+        nlpSucceeded = false;
+
     const response = {
+        "nlp_success": nlpSucceeded,
         "locations": {
             "start": startingLocation,
             "dest": destination,
