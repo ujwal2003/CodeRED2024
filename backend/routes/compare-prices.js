@@ -55,18 +55,33 @@ router.post('/flight-offers', async (req, res) => {
             return;
         }
 
-        let departureAirportIATA = flightOffersResponse.data.data[0].itineraries[0].segments[0].departure.iataCode
-        let departureAirportName = await airportName.getAirportNameFromIATA(departureAirportIATA);
+        let itinerarySegments = flightOffersResponse.data.data[0].itineraries[0].segments;
 
-        let arrivalAirportIATA = flightOffersResponse.data.data[0].itineraries[0].segments[0].arrival.iataCode;
-        let arrivalAirportName = await airportName.getAirportNameFromIATA(arrivalAirportIATA);
+        let iatasInOrder = [];
+        itinerarySegments.map((segment) => {
+            let prev = iatasInOrder[iatasInOrder.length-1];
+
+            if(prev != segment.departure.iataCode)
+                iatasInOrder.push(segment.departure.iataCode);
+
+            if(prev != segment.arrival.iataCode)
+                iatasInOrder.push(segment.arrival.iataCode);
+        });
+
+        let airportsInOrder = [];
+        for(let i=0; i<iatasInOrder.length; i++) {
+            let airport = await airportName.getAirportNameFromIATA(iatasInOrder[i]);
+            airportsInOrder.push(airport);
+        }
+
+        let departureTime = itinerarySegments[0].departure.at;
+        let arrivalTime = itinerarySegments[itinerarySegments.length-1].arrival.at;
 
         let filteredData = {
             "flight_data_success": true,
-            "departureAirport": departureAirportName,
-            "arrivalAirport": arrivalAirportName,
-            "departureTime": flightOffersResponse.data.data[0].itineraries[0].segments[0].departure.at,
-            "arrivalTime": flightOffersResponse.data.data[0].itineraries[0].segments[0].arrival.at,
+            "airportsInOrder": airportsInOrder,
+            "departureTime": departureTime,
+            "arrivalTime": arrivalTime,
             "price": flightOffersResponse.data.data[0].price.grandTotal
         }
 
