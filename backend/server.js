@@ -1,6 +1,8 @@
 const express = require('express');
 
-const cityloc = require('./apitests/citylocations'); //! TESTING
+//! TESTING
+const cityloc = require('./apitests/citylocations');
+const airprtName = require('./apitests/airportnames');
 
 const app = express();
 const port = 8080;
@@ -9,7 +11,7 @@ app.use(express.json())
 
 app.get('/', (req, res) => {
     res.send("Server is online.");
-    cityloc.runTest();
+    airprtName.runTest();
 });
 
 // routes
