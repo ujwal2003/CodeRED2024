@@ -2,9 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import GradientBackground from './GradientBackground';
 
+import axios from 'axios';
+
 const UserScreen = () => {
     const [prompt, setPrompt] = useState('');
     const [response, setResponse] = useState('');
+
+    async function sendPrompt(){
+        const res = await axios.post("prompt/get/", {"userPromp": prompt})
+
+        const data = await res.data;
+
+        console.log(data);
+        return data;
+    }
 
     const handleSubmit = async () => {
         if (!prompt.trim()) {
@@ -15,7 +26,7 @@ const UserScreen = () => {
         try {
             // Simulate backend response after some delay
             setTimeout(() => {
-                setResponse(`Response to "${prompt}" from backend.`);
+                setPrompt();
             }, 1000);
         } catch (error) {
             console.error('Error sending prompt:', error);

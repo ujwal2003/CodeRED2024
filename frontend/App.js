@@ -9,6 +9,9 @@ import GradientBackground from './GradientBackground';
 import WelcomeScreen from './WelcomeScreen'
 import UserScreen from './UserScreen';
 
+import axios from 'axios';
+axios.defaults.baseURL = "http://localhost:8080/";
+
 const Stack = createStackNavigator();
 
 export default function App() {
