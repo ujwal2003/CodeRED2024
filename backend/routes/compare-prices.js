@@ -4,6 +4,7 @@ const router = express.Router();
 const axios = require('axios');
 
 const cityCode = require('../utility/cityCode');
+const airportName = require('../utility/airportName');
 
 // Route to fetch flight offers
 router.post('/flight-offers', async (req, res) => {
@@ -54,10 +55,16 @@ router.post('/flight-offers', async (req, res) => {
             return;
         }
 
+        let departureAirportIATA = flightOffersResponse.data.data[0].itineraries[0].segments[0].departure.iataCode
+        let departureAirportName = await airportName.getAirportNameFromIATA(departureAirportIATA);
+
+        let arrivalAirportIATA = flightOffersResponse.data.data[0].itineraries[0].segments[0].arrival.iataCode;
+        let arrivalAirportName = await airportName.getAirportNameFromIATA(arrivalAirportIATA);
+
         let filteredData = {
             "flight_data_success": true,
-            "departureAirport": flightOffersResponse.data.data[0].itineraries[0].segments[0].departure.iataCode,
-            "arrivalAirport": flightOffersResponse.data.data[0].itineraries[0].segments[0].arrival.iataCode,
+            "departureAirport": departureAirportName,
+            "arrivalAirport": arrivalAirportName,
             "departureTime": flightOffersResponse.data.data[0].itineraries[0].segments[0].departure.at,
             "arrivalTime": flightOffersResponse.data.data[0].itineraries[0].segments[0].arrival.at,
             "price": flightOffersResponse.data.data[0].price.grandTotal
