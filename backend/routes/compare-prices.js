@@ -8,6 +8,7 @@ const airportName = require('../utility/airportName');
 
 // Route to fetch flight offers
 router.post('/flight-offers', async (req, res) => {
+
     try {
         // let {startCode, endCode, date} = req.body;
         let {start, end, date} = req.body;
@@ -16,9 +17,11 @@ router.post('/flight-offers', async (req, res) => {
         const authResponse = await axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', `grant_type=client_credentials&client_id=${process.env.AMADEUS_CLIENT_ID}&client_secret=${process.env.AMADEUS_CLIENT_SECRET}`, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
+                //'Content-Type' : 'application/json'
             }
         });
 
+        //console.log("here")
         const accessToken = authResponse.data.access_token;
 
         // Make a request to the Flight Offers Search API
@@ -85,6 +88,7 @@ router.post('/flight-offers', async (req, res) => {
             "price": flightOffersResponse.data.data[0].price.grandTotal
         }
 
+        //res.set('content-type', 'application/json');
         res.json(filteredData);
     } catch (error) {
         console.error(error);
