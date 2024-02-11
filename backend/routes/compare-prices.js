@@ -25,7 +25,8 @@ router.post('/flight-offers', async (req, res) => {
                 originLocationCode: startCode, // Example origin NYC
                 destinationLocationCode: endCode, // Example destination NYC
                 departureDate: date, // Example date '2024-12-15'
-                adults: '1'
+                adults: '1',
+                currencyCode: 'USD'
             }
         });
 
