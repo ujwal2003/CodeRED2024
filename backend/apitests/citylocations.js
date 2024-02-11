@@ -39,7 +39,7 @@ async function getLocationCode(cityName, countryCode = 'US', accessToken) {
 
 const clientId = process.env.AMADEUS_CLIENT_ID;
 const clientSecret = process.env.AMADEUS_CLIENT_SECRET;
-const cityName = 'seattle';
+const cityName = 'houston';
 
 async function runTest() {
     let accessToken = await getAccessToken(clientId, clientSecret);

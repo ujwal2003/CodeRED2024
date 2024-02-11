@@ -30,7 +30,7 @@ router.post('/flight-offers', async (req, res) => {
             }
         });
 
-        // console.log(flightOffersResponse.data.data[0])
+        let filteredResponse = []
         flightOffersResponse.data.data.map((dat) => {
             let filteredData = {
                 "departureAirport": dat.itineraries[0].segments[0].departure.iataCode,
@@ -40,10 +40,10 @@ router.post('/flight-offers', async (req, res) => {
                 "price": dat.price.grandTotal
             };
             
-            console.log(filteredData);
+            filteredResponse.push(filteredData);
         });
 
-        res.json(flightOffersResponse.data);
+        res.json(filteredResponse[0]);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error fetching flight offers');
