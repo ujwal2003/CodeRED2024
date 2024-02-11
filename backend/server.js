@@ -16,5 +16,5 @@ const comparePriceRouter = require("./routes/compare-prices")
 app.use("/prices", comparePriceRouter)
 
 app.listen(port, () => {
-    console.log(`Server running on prt ${port}`);
+    console.log(`Server running on port ${port}`);
 });
