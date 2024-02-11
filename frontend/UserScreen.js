@@ -7,17 +7,19 @@ import axios from 'axios';
 const UserScreen = () => {
     const [prompt, setPrompt] = useState('');
     const [response, setResponse] = useState('');
+    const [flightData, setFlightData] = useState({});
 
-    const makeApiRequest = async () => {
+    const makePromptRequest = async () => {
         try {
-          const response = await axios.get('http://172.24.171.217:8080/', {timeout: 5000});
-          console.log('API Response:', response.data);
-          // Handle response data as needed
+            const response = await axios.post('http://172.17.7.124:3000/prompt/get', { "userPrompt": prompt });
+            return response.data;
+            //console.log('API Response:', response.data.datetimes);
+            // Handle response data as needed
         } catch (error) {
-          console.error('API Request failed:', error);
-          // Handle errors
+            console.error('API Request failed:', error);
+            // Handle errors
         }
-      };
+    };
 
     const handleSubmit = async () => {
         if (!prompt.trim()) {
@@ -32,7 +34,34 @@ const UserScreen = () => {
             // }, 1000);
             // console.log(prompt);
             // sendPrompt();
-            await makeApiRequest();
+            let promptResponse = await makePromptRequest();
+
+            if (promptResponse.nlp_success) {
+                let startLoc = promptResponse.locations.start;
+                let endLoc = promptResponse.locations.dest;
+
+                let dateStr = promptResponse.datetimes.dates[0].start;
+                dateStr = new Date(dateStr);
+
+                let reqMonth = `${dateStr.getMonth() + 1}`.length < 2 ? `0${dateStr.getMonth() + 1}` : `${dateStr.getMonth() + 1}`;
+                let reqDay = `${dateStr.getDate()}`.length < 2 ? `0${dateStr.getDate()}` : `${dateStr.getDate()}`;
+
+                let reqDate = `${dateStr.getFullYear()}-${reqMonth}-${reqDay}`;
+
+                // console.log(typeof(startLoc))
+                // console.log(typeof(endLoc))
+                // console.log(typeof(reqDate))
+
+                try {
+                    const flightRes = await axios.post('http://172.17.7.124:3000/prices/flight-offers', { "start": startLoc, "end": endLoc, "date": reqDate });
+                    //console.log('flight API response:', flightRes.data);
+                    setFlightData(flightRes.data)
+                } catch (error) {
+                    console.error('API request failed:', error);
+                    console.log(error.response.data)
+                }
+            }
+
         } catch (error) {
             console.error('Error sending prompt:', error);
         }
@@ -47,6 +76,31 @@ const UserScreen = () => {
             >
                 <ScrollView contentContainerStyle={styles.scrollViewContainer} keyboardShouldPersistTaps="handled">
                     <View style={styles.innerContainer}>
+                        {flightData && flightData.flight_data_success ? (
+                            <View>
+                                <Text style={styles.title}>Flight Details:</Text>
+                                <View style={styles.detailContainer}>
+                                    <Text style={styles.detailLabel}>Airports In Order:</Text>
+                                    <View style={styles.detailValueContainer}>
+                                        {flightData.airportsInOrder.map((airport, index) => (
+                                            <Text key={index} style={styles.detailValue}>{airport}</Text>
+                                        ))}
+                                    </View>
+                                </View>
+                                <View style={styles.detailContainer}>
+                                    <Text style={styles.detailLabel}>Departure Time:</Text>
+                                    <Text style={styles.detailValue}>{flightData.departureTime}</Text>
+                                </View>
+                                <View style={styles.detailContainer}>
+                                    <Text style={styles.detailLabel}>Arrival Time:</Text>
+                                    <Text style={styles.detailValue}>{flightData.arrivalTime}</Text>
+                                </View>
+                                <View style={styles.detailContainer}>
+                                    <Text style={styles.detailLabel}>Price:</Text>
+                                    <Text style={styles.detailValue}>{flightData.price}</Text>
+                                </View>
+                            </View>
+                        ) : null}
                         {response ? <Text style={styles.response}>{response}</Text> : null}
                     </View>
                     <View style={styles.bottomContainer}>
@@ -95,6 +149,28 @@ const styles = StyleSheet.create({
 
         borderWidth: 2,
         borderColor: '#115E81',
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#333', // Change text color here
+    },
+    detailContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5,
+    },
+    detailLabel: {
+        fontWeight: 'bold',
+        marginRight: 5,
+        color: '#666', // Change text color here
+    },
+    detailValueContainer: {
+        marginLeft: 10,
+    },
+    detailValue: {
+        color: '#000', // Change text color here
     },
     response: {
         marginBottom: 20,
