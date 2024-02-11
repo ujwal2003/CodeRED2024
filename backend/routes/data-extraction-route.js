@@ -28,20 +28,29 @@ router.post('/get', (req, res) => {
     // const startLocationContext = doc.match('(from|between) #Place').out('normal');
     // const destinationContext = doc.match('(to|and) #Place').out('normal');
 
-    let startLocationContext = doc.match('from #Place').out('normal');
-    let destinationContext = doc.match('to #Place').out('normal');
+    let startLocationContext = doc.match('(from|between) #Place').out('normal');
+    let destinationContext = doc.match('(to|and) #Place').out('normal');
 
-    console.log(destinationContext);
-
-    if(!startLocationContext || !destinationContext) {
-        startLocationContext = doc.match('between #Place').out('normal');
-        destinationContext = doc.match('and #Place').out('normal');
-    }
+    // if(!startLocationContext || !destinationContext) {
+    //     startLocationContext = doc.match('between #Place').out('normal');
+    //     destinationContext = doc.match('and #Place').out('normal');
+    // }
 
     // console.log(startLocationContext);
     // console.log(destinationContext);
 
     const locations = doc.places().out('array');
+
+    // console.log(locations.includes(destinationContext.split(' ')[1]));
+    
+    if(!locations.includes(startLocationContext.split(' ')[1])) {
+        startLocationContext = doc.match('(from|between) #Place #Place').out('normal');
+    }
+
+    if(!locations.includes(destinationContext.split(' ')[1])) {
+        destinationContext = doc.match('(to|and) #Place #Place').out('normal');
+    }
+
 
     if(locations.length < 2)
         nlpSucceeded = false;
