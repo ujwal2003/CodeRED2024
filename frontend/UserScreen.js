@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import GradientBackground from './GradientBackground';
+import { useFonts } from 'expo-font';
 
 import axios from 'axios';
 
@@ -67,6 +68,10 @@ const UserScreen = () => {
         }
     };
 
+    const [loaded] = useFonts({
+        'MyFontName': require('./assets/fonts/Sen-Regular.ttf'),
+    })
+
     return (
         <GradientBackground>
             <KeyboardAvoidingView
@@ -78,9 +83,15 @@ const UserScreen = () => {
                     <View style={styles.innerContainer}>
                         {flightData && flightData.flight_data_success ? (
                             <View>
-                                <Text style={styles.title}>Flight Details:</Text>
+                                <Text style={styles.title}>chatAIr</Text>
                                 <View style={styles.detailContainer}>
-                                    <Text style={styles.detailLabel}>Airports In Order:</Text>
+                                    {/* <Text style={styles.detailValue}>
+                                        {`The cheapest flight for that route is $${flightData.price}, your trip will begin on
+                                         ${flightData.departureTime} and end on ${flightData.arrivalTime}`}
+                                    </Text> */}
+                                </View>
+                                <View style={styles.detailContainer}>
+                                    <Text style={styles.detailValue} numberOfLines={2}>Order of Airports: </Text>
                                     <View style={styles.detailValueContainer}>
                                         {flightData.airportsInOrder.map((airport, index) => (
                                             <Text key={index} style={styles.detailValue}>{airport}</Text>
@@ -88,16 +99,13 @@ const UserScreen = () => {
                                     </View>
                                 </View>
                                 <View style={styles.detailContainer}>
-                                    <Text style={styles.detailLabel}>Departure Time:</Text>
-                                    <Text style={styles.detailValue}>{flightData.departureTime}</Text>
+                                    <Text style={styles.detailValue}>The cheapest flight found is ${flightData.price}</Text>
                                 </View>
                                 <View style={styles.detailContainer}>
-                                    <Text style={styles.detailLabel}>Arrival Time:</Text>
-                                    <Text style={styles.detailValue}>{flightData.arrivalTime}</Text>
+                                    <Text style={styles.detailValue}>Departure time would be at: {flightData.departureTime}</Text>
                                 </View>
                                 <View style={styles.detailContainer}>
-                                    <Text style={styles.detailLabel}>Price:</Text>
-                                    <Text style={styles.detailValue}>{flightData.price}</Text>
+                                    <Text style={styles.detailValue}>Arrival time would be at: {flightData.arrivalTime}</Text>
                                 </View>
                             </View>
                         ) : null}
@@ -151,10 +159,13 @@ const styles = StyleSheet.create({
         borderColor: '#115E81',
     },
     title: {
+        fontFamily: 'MyFontName',
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
-        color: '#333', // Change text color here
+        color: '#FFFFFF',
+        bottom: 250,
+        textAlign: 'center'
     },
     detailContainer: {
         flexDirection: 'row',
@@ -164,13 +175,17 @@ const styles = StyleSheet.create({
     detailLabel: {
         fontWeight: 'bold',
         marginRight: 5,
-        color: '#666', // Change text color here
+        color: '#FFFFFF', // Change text color here
     },
     detailValueContainer: {
+        //fontFamily: 'MyFontName',
         marginLeft: 10,
     },
     detailValue: {
-        color: '#000', // Change text color here
+        fontFamily: 'MyFontName',
+        color: '#FFFFFF', // Change text color here
+        textAlign: 'left',
+        bottom: 200
     },
     response: {
         marginBottom: 20,

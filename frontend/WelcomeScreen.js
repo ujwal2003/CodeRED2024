@@ -1,12 +1,18 @@
 // WelcomeScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground} from 'react-native';
 import GradientBackground from './GradientBackground';
+import { useFonts } from 'expo-font';
 
 const WelcomeScreen = ({ navigation }) => {
     const handlePress = () => {
         navigation.navigate('User');
     };
+
+    const [loaded] = useFonts({
+        'MyFontName': require('./assets/fonts/Sen-Regular.ttf'),
+        'MyBold': require('./assets/fonts/Sen-Bold.ttf')
+    })
 
     return (
         <GradientBackground>
@@ -15,11 +21,11 @@ const WelcomeScreen = ({ navigation }) => {
                     <Image source = {require('./assets/blueLogo.png')}
                     style = {styles.imageInfo}/>
 
-                    <Text style = {styles.appText}>App Name</Text>
+                    <Text style = {styles.appText}>chatAIr</Text>
 
                     <Text style={styles.infoText}>
-                        Uncover <Text style={styles.boldText}>budget-friendly</Text> flights at the 
-                        <Text style={styles.boldText}> simplest</Text> request.
+                        Uncover <Text style={styles.boldText}>budget-friendly</Text> flights with a
+                        <Text style={styles.boldText}> simple</Text> chat.
                     </Text>
                 </View>
                 <TouchableOpacity style={styles.touchable} onPress={handlePress}>
@@ -37,7 +43,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     touchable: {
-        padding: 20,
+        padding: 18,
         bottom: -120,
         backgroundColor: '#90BE6D',
         borderRadius: 10,
@@ -56,24 +62,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#F4F5E6',
         borderRadius: 10,
-        paddingHorizontal: 50,
+        paddingHorizontal: 15,
         paddingTop: 180,
         paddingBottom: 105,
     },
     infoText: {
         fontSize: 15,
         marginBottom: 20,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontFamily: 'MyFontName',
+        bottom: 20
     },
     boldText: {
-        fontWeight: 'bold',
+        fontFamily: 'MyBold'
       },
     imageInfo: {
-        bottom: 140
+        bottom: 130
     },
     appText: {
         fontSize: 30,
-        bottom: 70
+        bottom: 70,
+        fontFamily: 'MyFontName'
     }
 });
 
