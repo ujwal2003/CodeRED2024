@@ -45,7 +45,7 @@ async function getCityLocationCode(cityName) {
     let accessToken = await getAccessToken(clientId, clientSecret);
 
     let locationCode = await requestCityLocationCodeAPI(cityName, 'US', accessToken);
-    console.log(locationCode);
+    return locationCode;
 }
 
-module.exports = getCityLocationCode;
+module.exports = { getCityLocationCode };
