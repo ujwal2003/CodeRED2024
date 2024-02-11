@@ -1,19 +1,24 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View, SafeAreaView, Text, StyleSheet, Image, ScrollView, TextInput } from 'react-native';
-import GradientBackground from './GradientBackground';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 
-// View --> UIView
-// SafeAreaView --> Helps notches not cover content
+import GradientBackground from './GradientBackground';
+import WelcomeScreen from './WelcomeScreen'
+import UserScreen from './UserScreen';
+
+const Stack = createStackNavigator();
+
 export default function App() {
   return (
-    <View style={{ flex: 1 }}>
-      <GradientBackground>
-          <Text style={styles.text}>Open up App.js to start working on your app!</Text>
-          <StatusBar style="auto" />
-      </GradientBackground>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        <Stack.Screen name="User" component={UserScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
