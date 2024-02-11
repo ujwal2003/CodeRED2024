@@ -30,6 +30,19 @@ router.post('/flight-offers', async (req, res) => {
             }
         });
 
+        // console.log(flightOffersResponse.data.data[0])
+        flightOffersResponse.data.data.map((dat) => {
+            let filteredData = {
+                "departureAirport": dat.itineraries[0].segments[0].departure.iataCode,
+                "arrivalAirport": dat.itineraries[0].segments[0].arrival.iataCode,
+                "departureTime": dat.itineraries[0].segments[0].departure.at,
+                "arrivalTime": dat.itineraries[0].segments[0].arrival.at,
+                "price": dat.price.grandTotal
+            };
+            
+            console.log(filteredData);
+        });
+
         res.json(flightOffersResponse.data);
     } catch (error) {
         console.error(error);
