@@ -8,14 +8,16 @@ const UserScreen = () => {
     const [prompt, setPrompt] = useState('');
     const [response, setResponse] = useState('');
 
-    async function sendPrompt(){
-        const res = await axios.post("prompt/get/", {"userPromp": prompt})
-
-        const data = await res.data;
-
-        console.log(data);
-        return data;
-    }
+    const makeApiRequest = async () => {
+        try {
+          const response = await axios.get('http://172.24.171.217:8080/', {timeout: 5000});
+          console.log('API Response:', response.data);
+          // Handle response data as needed
+        } catch (error) {
+          console.error('API Request failed:', error);
+          // Handle errors
+        }
+      };
 
     const handleSubmit = async () => {
         if (!prompt.trim()) {
@@ -25,9 +27,12 @@ const UserScreen = () => {
 
         try {
             // Simulate backend response after some delay
-            setTimeout(() => {
-                setPrompt();
-            }, 1000);
+            // setTimeout(() => {
+            //     setPrompt();
+            // }, 1000);
+            // console.log(prompt);
+            // sendPrompt();
+            await makeApiRequest();
         } catch (error) {
             console.error('Error sending prompt:', error);
         }
