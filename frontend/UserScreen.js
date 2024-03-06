@@ -4,6 +4,7 @@ import GradientBackground from './GradientBackground';
 import { useFonts } from 'expo-font';
 
 import axios from 'axios';
+const backendURL = 'http://172.17.7.124:3000';
 
 const UserScreen = () => {
     const [prompt, setPrompt] = useState('');
@@ -12,7 +13,7 @@ const UserScreen = () => {
 
     const makePromptRequest = async () => {
         try {
-            const response = await axios.post('http://172.17.7.124:3000/prompt/get', { "userPrompt": prompt });
+            const response = await axios.post(`${backendURL}/prompt/get`, { "userPrompt": prompt });
             return response.data;
             //console.log('API Response:', response.data.datetimes);
             // Handle response data as needed
@@ -54,7 +55,7 @@ const UserScreen = () => {
                 // console.log(typeof(reqDate))
 
                 try {
-                    const flightRes = await axios.post('http://172.17.7.124:3000/prices/flight-offers', { "start": startLoc, "end": endLoc, "date": reqDate });
+                    const flightRes = await axios.post(`${backendURL}/prices/flight-offers`, { "start": startLoc, "end": endLoc, "date": reqDate });
                     //console.log('flight API response:', flightRes.data);
                     setFlightData(flightRes.data)
                 } catch (error) {
