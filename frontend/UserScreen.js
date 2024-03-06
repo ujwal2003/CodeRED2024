@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from 'react-native';
 import GradientBackground from './GradientBackground';
 import { useFonts } from 'expo-font';
 
@@ -9,14 +9,20 @@ const UserScreen = () => {
     const [prompt, setPrompt] = useState('');
     const [response, setResponse] = useState('');
     const [flightData, setFlightData] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [promptSubmitted, setPromptSubmitted] = useState(false);
 
     const makePromptRequest = async () => {
         try {
-            const response = await axios.post('http://172.17.7.124:3000/prompt/get', { "userPrompt": prompt });
+            setLoading(true);
+            const response = await axios.post('http://172.17.68.108:3000/prompt/get', { "userPrompt": prompt });
+            setLoading(false);
             return response.data;
+
             //console.log('API Response:', response.data.datetimes);
             // Handle response data as needed
         } catch (error) {
+            setLoading(false);
             console.error('API Request failed:', error);
             // Handle errors
         }
@@ -29,12 +35,9 @@ const UserScreen = () => {
         }
 
         try {
-            // Simulate backend response after some delay
-            // setTimeout(() => {
-            //     setPrompt();
-            // }, 1000);
-            // console.log(prompt);
-            // sendPrompt();
+            setLoading(true);
+            setPromptSubmitted(true);
+
             let promptResponse = await makePromptRequest();
 
             if (promptResponse.nlp_success) {
@@ -54,17 +57,24 @@ const UserScreen = () => {
                 // console.log(typeof(reqDate))
 
                 try {
-                    const flightRes = await axios.post('http://172.17.7.124:3000/prices/flight-offers', { "start": startLoc, "end": endLoc, "date": reqDate });
+                    const flightRes = await axios.post('http://172.17.68.108:3000/prices/flight-offers', { "start": startLoc, "end": endLoc, "date": reqDate });
                     //console.log('flight API response:', flightRes.data);
-                    setFlightData(flightRes.data)
+                    setFlightData(flightRes.data);
+                    setResponse('Thank You for Using ChatAIr!');
+                    setLoading(false);
                 } catch (error) {
                     console.error('API request failed:', error);
-                    console.log(error.response.data)
+                    console.log(error.response.data);
+                    setResponse('Error');
+                    setLoading(false);
                 }
             }
 
         } catch (error) {
             console.error('Error sending prompt:', error);
+            setResponse(''); // Reset response state
+        } finally {
+            setLoading(false); // Set loading to false after request is complete
         }
     };
 
@@ -81,7 +91,11 @@ const UserScreen = () => {
             >
                 <ScrollView contentContainerStyle={styles.scrollViewContainer} keyboardShouldPersistTaps="handled">
                     <View style={styles.innerContainer}>
-                        {flightData && flightData.flight_data_success ? (
+                        {(loading || (!response && promptSubmitted)) && (
+                            <ActivityIndicator size="large" color="#FFFFFF" />
+                        )}
+
+                        {!loading && flightData.flight_data_success && (
                             <View>
                                 <Text style={styles.title}>chatAIr</Text>
                                 <View style={styles.detailContainer}>
@@ -108,8 +122,8 @@ const UserScreen = () => {
                                     <Text style={styles.detailValue}>Arrival time would be at: {flightData.arrivalTime}</Text>
                                 </View>
                             </View>
-                        ) : null}
-                        {response ? <Text style={styles.response}>{response}</Text> : null}
+                        )}
+                        {!loading && response ? <Text style={styles.response}>{response}</Text> : null}
                     </View>
                     <View style={styles.bottomContainer}>
                         <TextInput

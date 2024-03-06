@@ -15,7 +15,7 @@ const WelcomeScreen = ({ navigation }) => {
     })
 
     return (
-        <GradientBackground>
+        <ImageBackground source={require('./assets/Background.png')} style={styles.backgroundImage}>
             <View style={styles.container}>
                 <View style={styles.infoBox}>
                     <Image source = {require('./assets/blueLogo.png')}
@@ -32,7 +32,7 @@ const WelcomeScreen = ({ navigation }) => {
                     <Text style={styles.text}>Get Started</Text>
                 </TouchableOpacity>
             </View>
-        </GradientBackground>
+        </ImageBackground>
     );
 };
 
@@ -41,6 +41,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
     },
     touchable: {
         padding: 18,
@@ -70,19 +74,19 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginBottom: 20,
         textAlign: 'center',
-        fontFamily: 'MyFontName',
+        //fontFamily: 'MyFontName',
         bottom: 20
     },
     boldText: {
-        fontFamily: 'MyBold'
+        //fontFamily: 'MyBold'
       },
     imageInfo: {
         bottom: 130
     },
     appText: {
-        fontSize: 30,
+        fontSize: 40,
         bottom: 70,
-        fontFamily: 'MyFontName'
+        //fontFamily: 'MyFontName'
     }
 });
 
