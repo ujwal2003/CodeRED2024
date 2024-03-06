@@ -4,10 +4,10 @@ import GradientBackground from './GradientBackground';
 import { useFonts } from 'expo-font';
 
 import axios from 'axios';
-require('dotenv').config();
+// require('dotenv').config();
 
 // const backendURL = 'http://172.17.7.124:3000';
-const backendURL = process.env.BACKEND_URL;
+const backendURL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
 const UserScreen = () => {
     const [prompt, setPrompt] = useState('');
