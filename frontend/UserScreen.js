@@ -4,7 +4,8 @@ import GradientBackground from './GradientBackground';
 import { useFonts } from 'expo-font';
 
 import axios from 'axios';
-const backendURL = 'http://172.17.7.124:3000';
+// const backendURL = 'http://172.17.7.124:3000';
+const backendURL = 'https://good-ends-shop.loca.lt';
 
 const UserScreen = () => {
     const [prompt, setPrompt] = useState('');
